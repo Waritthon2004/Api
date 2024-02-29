@@ -73,10 +73,10 @@ router.post("/check", async (req, res) => {
             if (isMatch) {
                 res.status(201).json({ UID : result[0].UID});
             } else {
-                res.status(401).json({ UID : "Invalid password" });
+                res.json({ UID : "Invalid password" });
             }
         } catch (error) {
-            res.status(500).json(result);
+            res.status(500).json(err);
         }
     });
 });
