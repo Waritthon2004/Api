@@ -27,11 +27,11 @@ async function hashPassword(password: string): Promise<string> {
 router.post("/", async (req, res) => {
   let user: UserPostRequest = req.body;
 
+  
+  
   try {
     const password = user.Password;
     user.Password = await hashPassword(password);
-  
-    
     let sql =
       "INSERT INTO `User`(`Firstname`, `Lastname`, `Email`, `Password`) VALUES (?,?,?,?)";
     sql = mysql.format(sql, [
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
       });
     });
   } catch (error) {
-    res.status(500).json();
+    res.status(500).json(error);
   }
 });
 
