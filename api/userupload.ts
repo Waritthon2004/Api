@@ -56,7 +56,7 @@ router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
     //Get url image from storage
     const url = await getDownloadURL(snapshost.ref);
     let sql =
-      "INSERT INTO `Picture`(`url`) VALUES (?)";
+      "INSERT INTO `Picture`(`url`,`point`) VALUES (?,0)";
     sql = mysql.format(sql, [
         url
     ]);
