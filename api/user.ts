@@ -27,6 +27,7 @@ async function hashPassword(password: string): Promise<string> {
 router.post("/", async (req, res) => {
   let user: UserPostRequest = req.body;
 
+  console.log(user);
   
   
   try {
