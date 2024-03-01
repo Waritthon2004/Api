@@ -30,11 +30,12 @@ router.post("/", async (req, res) => {
   try {
     const password = user.Password;
     user.Password = await hashPassword(password);
-
+  
+    
     let sql =
-      "INSERT INTO `User`(`Fristname`, `Lastname`, `Email`, `Password`) VALUES (?,?,?,?)";
+      "INSERT INTO `User`(`Firstname`, `Lastname`, `Email`, `Password`) VALUES (?,?,?,?)";
     sql = mysql.format(sql, [
-      user.Surname,
+      user.Firstname,
       user.Lastname,
       user.Email,
       user.Password,

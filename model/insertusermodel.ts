@@ -1,6 +1,6 @@
 export interface UserPostRequest {
-    Surname:  string;
-    Lastname: string;
-    Email:    string;
-    Password: string;
+    Firstname: string;
+    Lastname:  string;
+    Email:     string;
+    Password:  string;
 }
