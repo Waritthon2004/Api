@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
 
       res.status(201).json({
         affected_row: result.affectedRows,
-        last_idx: result.insertId,
+        last_idx: result.insertId,  
       });
     });
   } catch (error) {
