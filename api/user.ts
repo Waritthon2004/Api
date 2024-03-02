@@ -1,12 +1,48 @@
 import express from "express";
 import { conn } from "../dbconnet";
 import mysql from "mysql";
-import { UserPostRequest } from "../model/insertusermodel";
 import bcrypt from "bcrypt";
 import { Loginrespone } from "../model/modellogin";
-
+import multer from "multer";
 //router = ตัวจัดการเส้นทาง
 export const router = express.Router();
+
+
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBhuVgmc1U5l8WvDfMtZUUONxkNp3QtFRc",
+  authDomain: "foodrate-101roi-et.firebaseapp.com",
+  projectId: "foodrate-101roi-et",
+  storageBucket: "foodrate-101roi-et.appspot.com",
+  messagingSenderId: "932396135284",
+  appId: "1:932396135284:web:b4d8da7bc3ec3f57eeb221",
+  measurementId: "G-YKWBWP84N6"
+};
+
+import {initializeApp} from "firebase/app";
+import { getStorage,ref,uploadBytesResumable,getDownloadURL} from "firebase/storage"
+//Connect to fire base
+initializeApp(firebaseConfig);
+//Connect to Storage
+const storage = getStorage();
+
+
+// Middleware save to memory
+class FileMiddleware {
+  //Attribute of class
+filename = "";
+ //Attribute diskloader for saving file to disk
+public readonly diskLoader = multer({
+  // storage = saving file to memory
+  storage: multer.memoryStorage(),
+  // limit file size
+  limits: {
+    fileSize: 67108864, // 64 MByte
+  },
+});
+}
+
 
 router.get("/", (req, res) => {
   const sql = "Select * from User ";
@@ -19,40 +55,57 @@ router.get("/", (req, res) => {
   });
 });
 
+
+
+const fileupload = new FileMiddleware();
 async function hashPassword(password: string): Promise<string> {
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
   return hashedPassword;
 }
-router.post("/", async (req, res) => {
-  let user: UserPostRequest = req.body;
-
-  console.log(user);
-  
-  
+router.post("/", fileupload.diskLoader.single("file"),async (req, res) => {
+  let user = req.body; 
+  let UID;
   try {
+     //Upload to firebase storage
+  const filename = Math.round(Math.random() * 1000)+".png";
+  // Define locations to be saved on storag
+  const storageRef = ref(storage,"/images/"+filename);
+  // define file detail
+  const metaData = {contentType : req.file!.mimetype};
+  // Start upload
+  const snapshost = await uploadBytesResumable(storageRef,req.file!.buffer, metaData);
+  //Get url image from storage
+  const url = await getDownloadURL(snapshost.ref)
     const password = user.Password;
     user.Password = await hashPassword(password);
     let sql =
-      "INSERT INTO `User`(`Firstname`, `Lastname`, `Email`, `Password`) VALUES (?,?,?,?)";
+      "INSERT INTO `User`(`Firstname`, `Lastname`, `Email`, `Password`,`image`) VALUES (?,?,?,?,?)";
     sql = mysql.format(sql, [
       user.Firstname,
       user.Lastname,
       user.Email,
       user.Password,
+      url
     ]);
 
     conn.query(sql, (err, result) => {
       if (err) throw err;
 
+
+      UID = result.insertId;
       res.status(201).json({
         affected_row: result.affectedRows,
         last_idx: result.insertId,  
       });
     });
+
+   
   } catch (error) {
     res.status(500).json(error);
   }
+ 
+
 });
 
 // เปรียบเทียบรหัสผ่านแบบแฮช

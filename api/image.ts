@@ -24,5 +24,6 @@ export const router = express.Router();
       else res.json({affected_row:result.affectedRows});
     });
   });
+
   
  

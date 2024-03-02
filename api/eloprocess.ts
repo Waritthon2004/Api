@@ -15,6 +15,8 @@ router.put("/", (req, res) => {
     if (a > b) {
       pointA = image.point1 + 32 * (1 - a);
       pointB = image.point2 + 32 * (0 - b);
+      
+   
     }
     if (image.point2 == 0) {
       pointA = image.point1 + 32 * (1 - b);
@@ -22,11 +24,13 @@ router.put("/", (req, res) => {
     } else {
       pointA = image.point1 + 32 * (0 - a);
       pointB = image.point2 + 32 * (1 - b);
+      
     }
   } else {
     if (b > a) {
       pointA = image.point1 + 32 * (1 - a);
       pointB = image.point2 + 32 * (0 - b);
+     
     }
     if (image.point1 == 0) {
       pointB = image.point2 + 32 * (1 - b);
