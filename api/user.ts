@@ -135,5 +135,13 @@ router.post("/check", async (req, res) => {
         }
     });
 });
+router.get("/:id", async (req,res)=>{
+  const id = req.params.id;
+  const sql = "select * from User where UID = ?";
+  conn.query(sql,[id],(err,result)=>{
+    if(err) res.status(400).json(err);
+    else res.json(result);
+  })
+})
 
 
