@@ -96,7 +96,7 @@ router.post("/", fileupload.diskLoader.single("file"),async (req, res) => {
       UID = result.insertId;
       res.status(201).json({
         affected_row: result.affectedRows,
-        last_idx: result.insertId,
+        last_idx: result.insertId,  
       });
     });
 
@@ -136,6 +136,14 @@ router.post("/check", async (req, res) => {
         }
     });
 });
+router.get("/:id", async (req,res)=>{
+  const id = req.params.id;
+  const sql = "select * from User where UID = ?";
+  conn.query(sql,[id],(err,result)=>{
+    if(err) res.status(400).json(err);
+    else res.json(result);
+  })
+})
 
 
 router.put("/", fileupload.diskLoader.single("file"),async (req, res) => {

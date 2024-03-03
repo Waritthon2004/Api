@@ -72,29 +72,21 @@ router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
   
 });
 
-router.post("/image",fileupload.diskLoader.single("file"),async(req,res)=>{
-  //Upload to firebase storage
-  const filename = Math.round(Math.random() * 1000)+".png";
-  // Define locations to be saved on storag
-  const storageRef = ref(storage,"/images/"+filename);
-  // define file detail
-  const metaData = {contentType : req.file!.mimetype};
-  // Start upload
-  const snapshost = await uploadBytesResumable(storageRef,req.file!.buffer, metaData);
-  //Get url image from storage
-  const url = await getDownloadURL(snapshost.ref)
-  let sql ='UPDATE `User` SET `image` = ? WHERE UID = 1';
-  sql = mysql.format(sql, [
-      url
-  ]);
+// router.post("/image",fileupload.diskLoader.single("file"),async(req,res)=>{
+//   //Upload to firebase storage
+//   const filename = Math.round(Math.random() * 1000)+".png";
+//   // Define locations to be saved on storag
+//   const storageRef = ref(storage,"/images/"+filename);
+//   // define file detail
+//   const metaData = {contentType : req.file!.mimetype};
+//   // Start upload
+//   const snapshost = await uploadBytesResumable(storageRef,req.file!.buffer, metaData);
+//   //Get url image from storage
+//   const url = await getDownloadURL(snapshost.ref)
+//   let sql ='UPDATE `User` SET `image` = ? WHERE UID = 1';
+//   sql = mysql.format(sql, [
+//       url
+//   ]);
 
-  conn.query(sql, (err, result) => {
-    if (err) throw err;
 
-    res.status(201).json({
-      affected_row: result.affectedRows,
-      last_idx: result.insertId,
-    });
-  });
 
-});
