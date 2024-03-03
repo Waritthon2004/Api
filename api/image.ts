@@ -10,7 +10,6 @@ export const router = express.Router();
     let sql = "SELECT * FROM Picture ORDER BY RAND() LIMIT 2";
     conn.query(sql, (err, result) => {
       if (err) throw err;
-  
       res
         .status(200)
         .json({

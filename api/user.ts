@@ -119,6 +119,7 @@ async function comparePassword(
 router.post("/check", async (req, res) => {
     let user: Loginrespone = req.body;
 
+    
     let sql = "SELECT UID, Email, Password FROM User WHERE Email = ?";
     sql = mysql.format(sql, [user.Email]);
     conn.query(sql, async (err, result) => {
@@ -137,3 +138,46 @@ router.post("/check", async (req, res) => {
 });
 
 
+router.put("/", fileupload.diskLoader.single("file"),async (req, res) => {
+  let user = req.body;
+  try {
+     //Upload to firebase storage
+  const filename = Math.round(Math.random() * 1000)+".png";
+  // Define locations to be saved on storag
+  const storageRef = ref(storage,"/images/"+filename);
+  // define file detail
+  const metaData = {contentType : req.file!.mimetype};
+  // Start upload
+  const snapshost = await uploadBytesResumable(storageRef,req.file!.buffer, metaData);
+  //Get url image from storage
+  const url = await getDownloadURL(snapshost.ref)
+    const password = user.Password;
+    user.Password = await hashPassword(password);
+    let sql =
+      "UPDATE `User` SET `Firstname` = ?, `Lastname` = ?,  `Email` = ? ,`Password` = ?,  `image` = ?  WHERE `UID` = ?" ;
+    sql = mysql.format(sql, [
+      user.Firstname,
+      user.Lastname,
+      user.Email,
+      user.Password,
+      url,
+      user.UID
+    ]);
+
+    conn.query(sql, (err, result) => {
+      if (err) throw err;
+
+
+      res.status(201).json({
+        affected_row: result.affectedRows,
+        last_idx: result.insertId,
+      });
+    });
+
+   
+  } catch (error) {
+    res.status(500).json(error);
+  }
+ 
+
+});

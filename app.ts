@@ -4,6 +4,7 @@ import {router as user} from "./api/user";
 import {router as upload} from "./api/userupload";
 import {router as image} from "./api/image";
 import {router as eloprocess} from "./api/eloprocess";
+import {router as standding} from "./api/standding";
 import cors from "cors";
 export const app = express();
 
@@ -22,5 +23,7 @@ app.use("/user",user);
 app.use("/upload",upload);
 
 app.use("/image",image);
+
+app.use("/standing",standding);
 
 app.use("/eloprocess",eloprocess);
