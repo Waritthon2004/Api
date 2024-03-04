@@ -36,27 +36,7 @@ router.put("/", (req, res) => {
 
   sql2 = mysql.format(sql2, [pointB, image.PID2]);
 
- 
-  Promise.all([
-    new Promise((resolve, reject) => {
-      conn.query(sql1, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-      });
-    }),
-    new Promise((resolve, reject) => {
-      conn.query(sql2, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-      });
-    })
-  ])
-    .then(results => {
-      res.status(200).send(results);
-    })
-    .catch(err => {
-      res.status(400).send(err);
-    });
+  
 
 
        // สร้าง Promise สำหรับ query ทั้งสอง
