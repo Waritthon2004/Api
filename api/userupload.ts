@@ -72,6 +72,9 @@ router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
   
 });
 
+
+
+
 // router.post("/image",fileupload.diskLoader.single("file"),async(req,res)=>{
 //   //Upload to firebase storage
 //   const filename = Math.round(Math.random() * 1000)+".png";

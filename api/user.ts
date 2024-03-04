@@ -122,21 +122,27 @@ router.post("/", fileupload.diskLoader.single("file"),async (req, res) => {
 
 
 router.post("/check", async (req, res) => {
-    let user: Loginrespone = req.body;
+  let user: Loginrespone = req.body;
 
-    
-    let sql = "SELECT UID, Email, Password FROM User WHERE Email = ?";
-    sql = mysql.format(sql, [user.Email]);
-    conn.query(sql, async (err, result) => {
-        if (err) throw err;
-    
-            if (comparePassword(user.Password, result[0].Password)) {
-                res.status(201).json({ UID : result[0].UID});
-            } else {
-                res.json({ UID : "Invalid password" });
-            }
-    });
+  let sql = "SELECT UID, Email, Password FROM User WHERE Email = ?";
+  sql = mysql.format(sql, [user.Email]);
+  conn.query(sql, (err, result) => {
+      if (err) throw err;
+
+      if (result && result.length > 0) {
+          if (comparePassword(user.Password, result[0].Password)) {
+              res.status(201).json({ UID: result[0].UID });
+          } else {
+              res.json({ UID: "Password not correct" });
+          }
+      } else {
+          res.json({ UID: "Invalid Eamil" });
+      }
+  });
 });
+
+
+
 router.get("/:id", async (req,res)=>{
   const id = req.params.id;
   const sql = "select * from User where UID = ?";
