@@ -6,8 +6,8 @@ export const router = express.Router();
 
 router.put("/", (req, res) => {
   const image = req.body;
-  let pointA;
-  let pointB;
+  let pointA = 0;
+  let pointB = 0;
   let a = 1 / (1 + Math.pow(10, (image.point2 - image.point1) / 400));
   let b = 1 / (1 + Math.pow(10, (image.point1- image.point2) / 400));
   console.log(a,b);
