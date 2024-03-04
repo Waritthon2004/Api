@@ -109,12 +109,13 @@ router.post("/", fileupload.diskLoader.single("file"),async (req, res) => {
       res.status(201).json({
         affected_row: result.affectedRows,
         last_idx: result.insertId,  
+        Err : "true"
       });
     });
 
    
   } catch (error) {
-    res.status(500).json(error);
+    res.json({Err : "false"});
   }
  
 

@@ -28,8 +28,7 @@ router.put("/", (req, res) => {
   if(pointB <=0){
     pointB = 0;
   }
-  console.log(pointA,pointB, image.win);
-  
+ 
 
   let sql1 = "update Picture set `point` = ?  where `PID` = ?";
   let sql2 = "update Picture set `point` = ?  where `PID` = ?";
@@ -85,3 +84,5 @@ router.put("/", (req, res) => {
   //     res.status(500).json({ error: err.message });
   //   });
 });
+
+
