@@ -45,6 +45,9 @@ class FileMiddleware {
 //Post /upload + file 
 const fileupload = new FileMiddleware();
 router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
+    const id = req.query.id;
+    console.log(id);
+    
     //Upload to firebase storage
     const filename = Math.round(Math.random() * 1000)+".png";
     // Define locations to be saved on storag
@@ -55,11 +58,8 @@ router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
     const snapshost = await uploadBytesResumable(storageRef,req.file!.buffer, metaData);
     //Get url image from storage
     const url = await getDownloadURL(snapshost.ref);
-    let sql =
-      "INSERT INTO `Picture`(`url`,`point`) VALUES (?,0)";
-    sql = mysql.format(sql, [
-        url
-    ]);
+    let sql ="INSERT INTO `Picture`(`url`,`point`,`UID`) VALUES (?,0,?)";
+    sql = mysql.format(sql, [url, id]);
 
     conn.query(sql, (err, result) => {
       if (err) throw err;

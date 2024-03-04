@@ -13,6 +13,17 @@ export const router = express.Router();
         .json(result);
     });
   });
+  //get image by id
+  router.get("/all/:id", (req, res) => {
+    const id = req.params.id;
+    let sql = "SELECT * FROM Picture Where UID = ?";
+    conn.query(sql,[id], (err, result) => {
+      if (err) throw err;
+      res
+        .status(200)
+        .json(result);
+    });
+  });
   router.get("/", (req, res) => {
     let sql = "SELECT * FROM Picture ORDER BY RAND() LIMIT 2";
     conn.query(sql, (err, result) => {
