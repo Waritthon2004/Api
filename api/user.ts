@@ -58,7 +58,7 @@ router.get("/", (req, res) => {
 
 // แฮชรหัสผ่านแบบแฮช
 const fileupload = new FileMiddleware();
-function hashPassword(password: string) {
+function hashPassword(password: any) {
   const saltRounds = 10;
   const hashedPassword = bcrypt.hashSync(password, saltRounds);
   return hashedPassword;
