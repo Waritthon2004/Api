@@ -6,8 +6,8 @@ export const router = express.Router();
 
 router.put("/", (req, res) => {
   const image = req.body;
-  let pointA;
-  let pointB;
+  let pointA ;
+  let pointB ;
   let a = 1 / (1 + Math.pow(10, (image.point2 - image.point1) / 400));
   let b = 1 / (1 + Math.pow(10, (image.point1- image.point2) / 400));
   console.log(a,b);
@@ -40,17 +40,37 @@ router.put("/", (req, res) => {
     res.status(400);
   });
 
-  conn.query(sql2, (err, result) => {
-    if (err) throw(err);
-    res.status(400);
-  });
-  // สร้าง Promise สำหรับ query ทั้งสอง
+ 
+  Promise.all([
+    new Promise((resolve, reject) => {
+      conn.query(sql1, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    }),
+    new Promise((resolve, reject) => {
+      conn.query(sql2, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    })
+  ])
+    .then(results => {
+      res.status(200).send(results);
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    });
+
+
+       // สร้าง Promise สำหรับ query ทั้งสอง
   // let query1 = new Promise((resolve, reject) => {
   //   conn.query(sql1, (err, result) => {
   //     if (err) reject(err);
   //     resolve(result);
   //   });
   // });
+
 
   // let query2 = new Promise((resolve, reject) => {
   //   conn.query(sql2, (err, result) => {

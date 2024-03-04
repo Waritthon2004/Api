@@ -67,8 +67,8 @@ function hashPassword(password: any) {
 
 // เปรียบเทียบรหัสผ่านแบบแฮช
 function comparePassword(
-  inputPassword: string,
-  hashedPassword: string){
+  inputPassword: any,
+  hashedPassword: any){
   return bcrypt.compareSync(inputPassword, hashedPassword);
 }
 
