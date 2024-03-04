@@ -10,7 +10,7 @@ router.put("/", (req, res) => {
   let pointB ;
   let a = 1 / (1 + Math.pow(10, (image.point2 - image.point1) / 400));
   let b = 1 / (1 + Math.pow(10, (image.point1- image.point2) / 400));
-  console.log(a,b);
+
   
   if (image.win == 1) {
       pointA = image.point1 + 32 * (1 - a);
@@ -28,18 +28,15 @@ router.put("/", (req, res) => {
   if(pointB <=0){
     pointB = 0;
   }
-
+  console.log(pointA,pointB, image.win);
+  
 
   let sql1 = "update Picture set `point` = ?  where `PID` = ?";
   let sql2 = "update Picture set `point` = ?  where `PID` = ?";
   sql1 = mysql.format(sql1, [pointA, image.PID1]);
 
   sql2 = mysql.format(sql2, [pointB, image.PID2]);
-  conn.query(sql1, (err, result) => {
-    if (err) throw(err);
-    res.status(400);
-  });
-
+ 
  
   Promise.all([
     new Promise((resolve, reject) => {
