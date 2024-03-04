@@ -56,13 +56,25 @@ router.get("/", (req, res) => {
 });
 
 
-
+// แฮชรหัสผ่านแบบแฮช
 const fileupload = new FileMiddleware();
-async function hashPassword(password: string): Promise<string> {
+function hashPassword(password: string) {
   const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  const hashedPassword = bcrypt.hashSync(password, saltRounds);
   return hashedPassword;
 }
+
+
+// เปรียบเทียบรหัสผ่านแบบแฮช
+function comparePassword(
+  inputPassword: string,
+  hashedPassword: string){
+  return bcrypt.compareSync(inputPassword, hashedPassword);
+}
+
+
+
+
 router.post("/", fileupload.diskLoader.single("file"),async (req, res) => {
   let user = req.body; 
   let UID;
@@ -78,7 +90,7 @@ router.post("/", fileupload.diskLoader.single("file"),async (req, res) => {
   //Get url image from storage
   const url = await getDownloadURL(snapshost.ref)
     const password = user.Password;
-    user.Password = await hashPassword(password);
+    user.Password = hashPassword(password);
     let sql =
       "INSERT INTO `User`(`Firstname`, `Lastname`, `Email`, `Password`,`image`) VALUES (?,?,?,?,?)";
     sql = mysql.format(sql, [
@@ -108,13 +120,6 @@ router.post("/", fileupload.diskLoader.single("file"),async (req, res) => {
 
 });
 
-// เปรียบเทียบรหัสผ่านแบบแฮช
-async function comparePassword(
-  inputPassword: string,
-  hashedPassword: string
-): Promise<boolean> {
-  return await bcrypt.compare(inputPassword, hashedPassword);
-}
 
 router.post("/check", async (req, res) => {
     let user: Loginrespone = req.body;
@@ -124,16 +129,12 @@ router.post("/check", async (req, res) => {
     sql = mysql.format(sql, [user.Email]);
     conn.query(sql, async (err, result) => {
         if (err) throw err;
-        try {
-            const isMatch = await comparePassword(user.Password, result[0].Password);
-            if (isMatch) {
+    
+            if (comparePassword(user.Password, result[0].Password)) {
                 res.status(201).json({ UID : result[0].UID});
             } else {
                 res.json({ UID : "Invalid password" });
             }
-        } catch (error) {
-            res.status(500).json(err);
-        }
     });
 });
 router.get("/:id", async (req,res)=>{
