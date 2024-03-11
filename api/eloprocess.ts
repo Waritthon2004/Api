@@ -28,7 +28,8 @@ router.put("/",async (req, res) => {
   let b = 1 / (1 + Math.pow(10, (image.point1- image.point2) / 400));
   
   
-  
+  console.log(image);
+
   if (image.win == 1) {
       pointA = image.point1 + 32 * (1 - a);
       pointB = image.point2 + 32 * (0 - b);
