@@ -58,7 +58,7 @@ router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
     const snapshost = await uploadBytesResumable(storageRef,req.file!.buffer, metaData);
     //Get url image from storage
     const url = await getDownloadURL(snapshost.ref);
-    let sql ="INSERT INTO `Picture`(`url`,`point`,`UID`) VALUES (?,0,?)";
+    let sql ="INSERT INTO `Picture`(`url`,`UID`) VALUES (?,?)";
     sql = mysql.format(sql, [url, id]);
 
     conn.query(sql, async (err, result) => {
