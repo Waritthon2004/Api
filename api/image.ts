@@ -25,10 +25,12 @@ export const router = express.Router();
     });
   });
   router.get("/", (req, res) => {
-    let sql = "SELECT * FROM Picture ORDER BY RAND() LIMIT 2";
+    let sql = "SELECT Picture.*,Statics.point as point FROM Picture,Statics WHERE Picture.PID = Statics.PID and DATEDIFF(Date, CURDATE())=0 ORDER BY RAND() LIMIT 2";
     conn.query(sql, (err, result) => {
       if (err) throw err;
-      res
+
+      if(result.length > 0){
+        res
         .status(200)
         .json({
           pid1: result[0].PID,
@@ -39,6 +41,8 @@ export const router = express.Router();
           point2: result[1].point,
           pid2: result[1].PID
         });
+      }
+      
     });
   });
 

@@ -61,12 +61,19 @@ router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
     let sql ="INSERT INTO `Picture`(`url`,`point`,`UID`) VALUES (?,0,?)";
     sql = mysql.format(sql, [url, id]);
 
-    conn.query(sql, (err, result) => {
+    conn.query(sql, async (err, result) => {
       if (err) throw err;
 
       res.status(201).json({
         affected_row: result.affectedRows,
         last_idx: result.insertId,
+      });
+      const currentDate = new Date().toISOString().slice(0, 10);
+      let check2: any = await new Promise((resolve, reject) => {
+        conn.query("INSERT INTO `Statics`(`PID`, `Date`, `point`) VALUES (?,?,?)",[result.insertId, currentDate,0], (err, result) => {
+          if (err) reject(err);
+          resolve(result);
+        });
       });
     });
   
