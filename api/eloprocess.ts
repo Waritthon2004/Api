@@ -58,13 +58,17 @@ router.put("/",async (req, res) => {
     });
   });
 
+console.log(check1);
+console.log(check2);
+
+
 
   let sql1 = "";
   let sql2 = "";
  
   if(check1.length>0){
     sql1 = "update Statics set `point` = ?  where `SID` = ?";
-    sql1 = mysql.format(sql1, [pointA, image.PID1]);
+    sql1 = mysql.format(sql1, [pointA, check1[0].SID]);
   }
   else{
     sql1 = "INSERT INTO `Statics`(`PID`, `Date`, `point`) VALUES (?,?,?)";
@@ -73,32 +77,34 @@ router.put("/",async (req, res) => {
 
   if(check2.length>0){
      sql2 = "update Statics set `point` = ?  where `SID` = ?";
-    sql2 = mysql.format(sql2, [pointB,image.PID2]);
+    sql2 = mysql.format(sql2, [pointB,check2[0].SID]);
   }
   else{
     sql2 = "INSERT INTO `Statics`(`PID`, `Date`, `point`) VALUES (?,?,?)";
     sql2 = mysql.format(sql2, [image.PID2, currentDate,pointB]);
   }
+console.log(sql1);
+console.log(sql2);
 
-  console.log(sql1);
-  console.log(sql2);
-  
+
   Promise.all([
     new Promise((resolve, reject) => {
       conn.query(sql1, (err, result) => {
         if (err) reject(err);
-        resolve( result.affectedRows);
+        resolve(result.affectedRows);
       });
     }),
     new Promise((resolve, reject) => {
       conn.query(sql2, (err, result) => {
         if (err) reject(err);
-        resolve( result.affectedRows);
+        resolve(result.affectedRows);
       });
     })
   ])
     .then(results => {
       res.status(200).send(results);
+      console.log(results);
+      
     })
     .catch(err => {
       res.status(400).send(err);
