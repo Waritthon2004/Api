@@ -3,6 +3,20 @@ import { conn } from "../dbconnet";
 import mysql from "mysql";
 
 export const router = express.Router();
+router.post("/chart",async (req, res) => {
+  
+  const data = req.body;
+  let sql = "SELECT Date,point FROM Statics WHERE DATEDIFF(Date, CURDATE()) =0";
+  conn.query(sql, (err, result) => {
+    if (err) throw err;
+    res
+      .status(200)
+      .json(result);
+  });
+});
+
+
+
 
 router.put("/",async (req, res) => {
   const image = req.body;
