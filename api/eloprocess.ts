@@ -6,12 +6,14 @@ export const router = express.Router();
 router.post("/chart",async (req, res) => {
   
   const data = req.body;
-  let sql = "SELECT Date,point FROM Statics WHERE DATEDIFF(Date, CURDATE()) =0";
+  let sql = "SELECT DISTINCT DATE_FORMAT(Date, '%Y-%m-%d') AS Date, point  FROM Statics  WHERE PID = 69 AND DATEDIFF(Date, CURDATE()) <= 7 ORDER BY Date ASC";
   conn.query(sql, (err, result) => {
     if (err) throw err;
     res
       .status(200)
       .json(result);
+    console.log(result);
+    
   });
 });
 
@@ -58,11 +60,6 @@ router.put("/",async (req, res) => {
     });
   });
 
-console.log(check1);
-console.log(check2);
-
-
-
   let sql1 = "";
   let sql2 = "";
  
@@ -103,7 +100,6 @@ console.log(sql2);
   ])
     .then(results => {
       res.status(200).send(results);
-      console.log(results);
       
     })
     .catch(err => {
