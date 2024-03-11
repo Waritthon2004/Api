@@ -53,5 +53,14 @@ export const router = express.Router();
     });
   });
 
+  router.get('/date/:day',(req,res)=>{
+    const day = req.params.day;
+    let sql = "SELECT * FROM Statics,Picture WHERE Picture.PID = Statics.PID and DATEDIFF(CURDATE(),Date )=?";
+    conn.query(sql,[day],(err,result)=>{
+      if(err) throw err;
+      res.json(result); 
+    })
+  })
+
   
  
