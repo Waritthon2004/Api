@@ -75,12 +75,12 @@ router.post("/",fileupload.diskLoader.single("file"),async(req,res)=>{
           resolve(result);
         });
       });
-      let check3: any = await new Promise((resolve, reject) => {
-        conn.query("INSERT INTO `Statics`(`PID`, `Date`, `point`) VALUES (?, DATE_SUB(CURDATE(), INTERVAL 1 DAY),?)",[result.insertId,0], (err, result) => {
-          if (err) reject(err);
-          resolve(result);
-        });
-      });
+      // let check3: any = await new Promise((resolve, reject) => {
+      //   conn.query("INSERT INTO `Statics`(`PID`, `Date`, `point`) VALUES (?, DATE_SUB(CURDATE(), INTERVAL 1 DAY),?)",[result.insertId,0], (err, result) => {
+      //     if (err) reject(err);
+      //     resolve(result);
+      //   });
+      // });
     });
   
 });
