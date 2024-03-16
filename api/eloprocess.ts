@@ -1,7 +1,6 @@
 import express from "express";
 import { conn } from "../dbconnet";
 import mysql from "mysql";
-
 export const router = express.Router();
 router.post("/chart",async (req, res) => {
   
@@ -107,6 +106,20 @@ console.log(sql2);
       res.status(400).send(err);
     });
 
+    // const datepipe: DatePipe = new DatePipe('en-US')
+    // let formattedDate = datepipe.transform(new Date(), 'YYYY-MM-dd')
+    // console.log(formattedDate);
+    const date = getCurrentDate();
+console.log(date);
 });
 
+
+function getCurrentDate(): string {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); 
+  const day = date.getDate().toString().padStart(2, '0');
+  
+  return `${year}-${month}-${day}`;
+}
 
