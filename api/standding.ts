@@ -8,8 +8,7 @@ export const router = express.Router();
 router.get("/", (req, res) => {
     let sql = `SELECT *, ROW_NUMBER() OVER (ORDER BY point DESC) AS "rank" FROM Statics,Picture 
     WHERE  Picture.PID = Statics.PID
-    AND Date IN(CURDATE()) ORDER BY point DESC LIMIT 10
-    `;
+     ORDER BY point DESC LIMIT 10`;
     conn.query(sql, (err, result) => {
       if (err) throw err;
       res
