@@ -22,21 +22,26 @@ router.post("/chart",async (req, res) => {
 
 router.put("/",async (req, res) => {
   const image = req.body;
-  let pointA ;
-  let pointB ;
+  let pointA = 0;
+  let pointB  = 0;
   let a = 1 / (1 + Math.pow(10, (image.point2 - image.point1) / 400));
   let b = 1 / (1 + Math.pow(10, (image.point1- image.point2) / 400));
-  
-  
-  console.log(image);
+  let str1 = "";
+  let str2 = "";
+
 
   if (image.win == 1) {
       pointA = image.point1 + 32 * (1 - a);
       pointB = image.point2 + 32 * (0 - b);
+      str1 = image.point1+"+ 32 * (1 - "+a+")";
+      str2 = image.point2+"+ 32 * (0 - "+b+")";
  
   } else if (image.win == 2) {
       pointA = image.point1 + 32 * (0 - a);
       pointB = image.point2 + 32 * (1 - b);
+
+      str1 = image.point1+" 32 * (0 - "+a+")";
+      str2 = image.point2+" 32 * (1 - "+b+")";
   }
 
   if(pointA <=0){
@@ -47,6 +52,10 @@ router.put("/",async (req, res) => {
     pointB = 0;
   }
   const currentDate = new Date().toISOString().slice(0, 10);
+  console.log(currentDate);
+  
+  
+  
   let check1: any = await new Promise((resolve, reject) => {
     conn.query("select SID from Statics where `Date` = ?  and `PID` = ?", [currentDate,image.PID1], (err, result) => {
       if (err) reject(err);
@@ -63,6 +72,8 @@ router.put("/",async (req, res) => {
 
   let sql1 = "";
   let sql2 = "";
+  console.log(check1,check2);
+  
  
   if(check1.length>0){
     sql1 = "update Statics set `point` = ?  where `SID` = ?";
@@ -100,7 +111,25 @@ console.log(sql2);
     })
   ])
     .then(results => {
-      res.status(200).send(results);
+      
+      
+      res.status(200).json({
+        Win : image.win ,
+        URL1: image.URL1,
+        URL2: image.URL2,
+        cala : "1 / (1 + Math.pow(10, (" + image.point2 +" - " + image.point1 + ") / 400)) ",
+        calb : "1 / (1 + Math.pow(10, (" + image.point1 +" - " + image.point2 + ") / 400)) ",
+        ra : a,
+        rb : b,
+        sum1 :str1,
+        sum2 : sql2,
+        newA : pointA,
+        newB : pointB,
+        point1: image.point1,
+        point2: image.point2,
+      }
+    
+      );
       
     })
     .catch(err => {
